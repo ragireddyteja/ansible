@@ -1,0 +1,24 @@
+---
+- name: Check for available updates on Linux systems
+  hosts: all
+  become: yes
+  tasks:
+    - name: Check updates on Debian/Ubuntu
+      ansible.builtin.shell: apt list --upgradable 2>/dev/null | tail -n +2
+      register: apt_updates
+      when: ansible_facts['os_family'] == "Debian"
+
+    - name: Show available updates (Debian/Ubuntu)
+      ansible.builtin.debug:
+        msg: "{{ apt_updates.stdout_lines }}"
+      when: ansible_facts['os_family'] == "Debian"
+
+    - name: Check updates on RHEL/CentOS/Rocky
+      ansible.builtin.shell: yum check-update || true
+      register: yum_updates
+      when: ansible_facts['os_family'] == "RedHat"
+
+    - name: Show available updates (RHEL/CentOS/Rocky)
+      ansible.builtin.debug:
+        msg: "{{ yum_updates.stdout_lines }}"
+      when: ansible_facts['os_family'] == "RedHat"
