@@ -1,16 +1,7 @@
 ---
-- name: Install and start nginx
+- name: Test connectivity with managed hosts
   hosts: all
-  become: yes
+  gather_facts: false
   tasks:
-    - name: Install nginx
-      apt:
-        name: nginx
-        state: present
-        update_cache: yes
-
-    - name: Start nginx service
-      service:
-        name: nginx
-        state: started
-        enabled: yes
+    - name: Ping the host
+      ansible.builtin.ping:
